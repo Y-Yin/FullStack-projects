@@ -1,8 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import {  ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+
+  // 全局启用 ValidationPipe，可在dto中直接添加校验规则
+  app.useGlobalPipes(new ValidationPipe());
+
+  const configService = app.get(ConfigService);
+  await app.listen(configService.get('nest_server_port'));
 }
 bootstrap();
